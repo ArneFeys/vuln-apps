@@ -1,6 +1,4 @@
 from flask import Flask, render_template, request, session, redirect, url_for
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 import psycopg2
 import bcrypt
 import os
@@ -10,14 +8,6 @@ app = Flask(__name__)
 
 # Use environment variable for secret key, with a secure random fallback
 app.secret_key = os.environ.get('SECRET_KEY', os.urandom(32))
-
-# Configure rate limiting
-limiter = Limiter(
-    app=app,
-    key_func=get_remote_address,
-    default_limits=["200 per day", "50 per hour"],
-    storage_uri="memory://"
-)
 
 # Database configuration
 DB_HOST = os.environ.get('DB_HOST', 'db')
@@ -51,7 +41,6 @@ def index():
     return render_template('index.html', logged_in=session.get('logged_in', False), username=session.get('username'))
 
 @app.route('/login', methods=['GET', 'POST'])
-@limiter.limit("10 per minute")  # Rate limit login attempts
 def login():
     error = None
     if request.method == 'POST':
