@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 import psycopg2
-import bcrypt
 import os
 import re
 
@@ -65,16 +64,16 @@ def login():
             
             # SECURE: Use parameterized query to prevent SQL injection
             cur.execute(
-                "SELECT id, username, password_hash FROM users WHERE username = %s",
+                "SELECT id, username, password FROM users WHERE username = %s",
                 (username,)
             )
             user = cur.fetchone()
             
             if user:
-                user_id, db_username, password_hash = user
+                user_id, db_username, stored_password = user
                 
-                # Verify password using bcrypt
-                if bcrypt.checkpw(password.encode('utf-8'), password_hash.encode('utf-8')):
+                # Simple plain text password comparison
+                if password == stored_password:
                     session['logged_in'] = True
                     session['username'] = db_username
                     session['user_id'] = user_id
