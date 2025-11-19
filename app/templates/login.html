@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Vulnerable Web App</title>
+    <title>Login - Secure Web App</title>
     <style>
         * {
             margin: 0;
@@ -127,9 +127,9 @@
         </form>
         
         <div class="hint">
-            <strong>💡 Hint for Testing:</strong>
-            Valid credentials: admin / admin123<br>
-            Or try a SQL injection: ' OR '1'='1' --
+            <strong>💡 Test Credentials:</strong>
+            Username: admin / Password: admin123<br>
+            (Other users: john, alice, bob with their respective passwords)
         </div>
         
         <a href="{{ url_for('index') }}" class="back-link">← Back to Home</a>

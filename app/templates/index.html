@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vulnerable Web App - Home</title>
+    <title>Secure Web App - Home</title>
     <style>
         * {
             margin: 0;
@@ -68,10 +68,10 @@
 </head>
 <body>
     <div class="container">
-        <h1>🔓 Vulnerable Web Application</h1>
+        <h1>🔐 Secure Web Application</h1>
         
         <div class="warning">
-            <strong>⚠️ Warning:</strong> This application contains intentional security vulnerabilities for educational purposes only. Do not deploy in production!
+            <strong>✅ Secure Version:</strong> This is the fixed version with SQL injection and other vulnerabilities patched. All security best practices have been implemented.
         </div>
         
         {% if logged_in %}
@@ -79,8 +79,8 @@
             <a href="{{ url_for('dashboard') }}" class="btn">Go to Dashboard</a>
             <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
         {% else %}
-            <p>This is a demonstration application with a SQL Injection vulnerability.</p>
-            <p>Try to login or exploit the vulnerability!</p>
+            <p>This secure version implements parameterized queries, password hashing, input validation, and rate limiting.</p>
+            <p>Login with valid credentials to access the dashboard.</p>
             <a href="{{ url_for('login') }}" class="btn">Login</a>
         {% endif %}
     </div>
