@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- admin / admin123
 INSERT INTO users (username, password_hash, email) VALUES
-    ('admin', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYBq.lkvy.', 'admin@vulnapp.local');
+    ('admin', '$2b$12$iGKtIBySFnO9f9XZd0M3dOQ4VRYphxM.SFHP.Uh0W4uTiD59Q1xuK', 'admin@vulnapp.local');
 
 -- john / password123
 INSERT INTO users (username, password_hash, email) VALUES
