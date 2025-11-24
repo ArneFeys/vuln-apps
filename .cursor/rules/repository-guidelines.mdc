@@ -1,0 +1,62 @@
+---
+description: Guidelines for creating purpose-built vulnerable applications for testing AI pentesting tools
+globs:
+alwaysApply: true
+---
+
+# Repository Purpose
+
+This repository contains purpose-built vulnerable applications designed to test AI pentesting tools and security automation systems.
+
+# Code Guidelines
+
+## Simplicity and Clarity
+
+- Keep code simple and concise
+- Avoid unnecessary abstractions or complexity
+- Each vulnerability should be easy to identify and understand
+- Use straightforward, readable code without clever tricks
+
+## Documentation
+
+- Keep READMEs concise and to the point
+- Focus on: setup instructions, vulnerability descriptions, and exploitation examples
+- No emojis in documentation
+- Document what vulnerabilities exist and where they are located
+- Include clear examples of how to exploit each vulnerability
+
+## Application Structure
+
+- Each app should be self-contained with its own Docker setup
+- Maintain separate `vulnerable/` and `fixed/` versions where applicable
+- Keep dependencies minimal - only include what's necessary
+- Use standard, well-known frameworks and libraries
+
+## Vulnerability Design
+
+- Vulnerabilities should be intentional and clearly documented
+- Each vulnerability should represent a real-world security issue
+- Avoid obscure or contrived vulnerabilities
+- Make vulnerabilities realistic but obvious enough for testing AI tools
+
+## Technical Standards
+
+- Use Docker for consistent deployment
+- Keep Docker configurations simple
+- Minimize external dependencies
+- Use standard ports and configurations where possible
+- Ensure applications can run in isolated environments
+
+## Testing Considerations
+
+- Applications should be easily scannable by automated tools
+- Include multiple vulnerability types per application when appropriate
+- Ensure vulnerabilities are reproducible
+- Provide working exploit examples in documentation
+
+# When Making Changes
+
+- Maintain consistency across applications
+- Test that vulnerabilities are exploitable as documented
+- Keep fixed versions truly fixed (no residual vulnerabilities)
+- Update documentation if behavior changes
