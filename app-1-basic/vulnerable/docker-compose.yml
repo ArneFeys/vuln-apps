@@ -1,14 +1,12 @@
-version: "3.8"
-
 services:
-  db:
+  app1-vuln-db:
     image: postgres:15-alpine
     environment:
       POSTGRES_DB: vulnapp
       POSTGRES_USER: vulnuser
       POSTGRES_PASSWORD: vulnpass
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - app1_vuln_postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U vulnuser -d vulnapp"]
@@ -16,20 +14,20 @@ services:
       timeout: 5s
       retries: 5
 
-  web:
+  app1-vuln-web:
     build: .
     ports:
       - "8001:5000"
     environment:
-      DB_HOST: db
+      DB_HOST: app1-vuln-db
       DB_NAME: vulnapp
       DB_USER: vulnuser
       DB_PASSWORD: vulnpass
     depends_on:
-      db:
+      app1-vuln-db:
         condition: service_healthy
     volumes:
       - ./app:/app
 
 volumes:
-  postgres_data:
+  app1_vuln_postgres_data:

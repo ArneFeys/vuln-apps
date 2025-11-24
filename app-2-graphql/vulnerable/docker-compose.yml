@@ -1,7 +1,5 @@
-version: "3.8"
-
 services:
-  db:
+  app2-vuln-db:
     image: postgres:15-alpine
     environment:
       POSTGRES_DB: graphql_db
@@ -9,36 +7,36 @@ services:
       POSTGRES_PASSWORD: password123
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-      - postgres_data:/var/lib/postgresql/data
+      - app2_vuln_postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U admin -d graphql_db"]
       interval: 5s
       timeout: 5s
       retries: 5
 
-  api:
+  app2-vuln-api:
     build:
       context: ./api
       dockerfile: Dockerfile
     environment:
-      DATABASE_URL: postgresql://admin:password123@db:5432/graphql_db
+      DATABASE_URL: postgresql://admin:password123@app2-vuln-db:5432/graphql_db
       DEBUG: "true"
     ports:
       - "8004:8000"
     depends_on:
-      db:
+      app2-vuln-db:
         condition: service_healthy
     volumes:
       - ./api:/app
 
-  frontend:
+  app2-vuln-frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
       - "8003:80"
     depends_on:
-      - api
+      - app2-vuln-api
 
 volumes:
-  postgres_data:
+  app2_vuln_postgres_data:

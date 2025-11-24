@@ -1,5 +1,3 @@
-version: "3.8"
-
 include:
   - path: ./app-1-basic/vulnerable/docker-compose.yml
     project_directory: ./app-1-basic/vulnerable
@@ -9,7 +7,6 @@ include:
     project_directory: ./app-2-graphql/vulnerable
 
 services:
-  # Landing Page
   landing:
     image: nginx:alpine
     ports:
