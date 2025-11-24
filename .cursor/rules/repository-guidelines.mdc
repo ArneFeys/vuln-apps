@@ -19,7 +19,7 @@ This repository contains purpose-built vulnerable applications designed to test 
 
 ## Documentation
 
-- Keep READMEs concise and to the point
+- Keep READMEs extremely concise and to the point
 - Focus on: setup instructions, vulnerability descriptions, and exploitation examples
 - No emojis in documentation
 - Document what vulnerabilities exist and where they are located

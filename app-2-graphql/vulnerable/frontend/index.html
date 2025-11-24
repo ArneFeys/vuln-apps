@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GraphQL Vulnerable App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>GraphQL API Demo</h1>
+            <p class="subtitle">Explore the GraphQL API with various queries and mutations</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="users">Users</button>
+            <button class="tab-btn" data-tab="posts">Posts</button>
+            <button class="tab-btn" data-tab="products">Products</button>
+            <button class="tab-btn" data-tab="orders">Orders</button>
+            <button class="tab-btn" data-tab="messages">Messages</button>
+            <button class="tab-btn" data-tab="custom">Custom Query</button>
+        </div>
+
+        <div class="content">
+            <!-- Users Tab -->
+            <div id="users-tab" class="tab-content active">
+                <h2>Users Management</h2>
+                
+                <div class="section">
+                    <h3>Query Users</h3>
+                    <button onclick="fetchAllUsers()">Get All Users</button>
+                    <button onclick="fetchUser()">Get User by ID</button>
+                    <button onclick="searchUsers()">Search Users</button>
+                </div>
+
+                <div class="section">
+                    <h3>Create User</h3>
+                    <input type="text" id="new-username" placeholder="Username">
+                    <input type="email" id="new-email" placeholder="Email">
+                    <input type="password" id="new-password" placeholder="Password">
+                    <input type="text" id="new-role" placeholder="Role (optional)">
+                    <button onclick="createUser()">Create User</button>
+                </div>
+
+                <div class="section">
+                    <h3>Update User</h3>
+                    <input type="number" id="update-user-id" placeholder="User ID">
+                    <input type="text" id="update-username" placeholder="New Username">
+                    <input type="text" id="update-role" placeholder="New Role">
+                    <button onclick="updateUser()">Update User</button>
+                </div>
+
+                <div class="section">
+                    <h3>Delete User</h3>
+                    <input type="number" id="delete-user-id" placeholder="User ID">
+                    <button onclick="deleteUser()">Delete User</button>
+                </div>
+            </div>
+
+            <!-- Posts Tab -->
+            <div id="posts-tab" class="tab-content">
+                <h2>Posts Management</h2>
+                
+                <div class="section">
+                    <h3>Query Posts</h3>
+                    <button onclick="fetchAllPosts()">Get All Posts</button>
+                    <button onclick="fetchPost()">Get Post by ID</button>
+                    <button onclick="fetchPostsByAuthor()">Get Posts by Author</button>
+                </div>
+
+                <div class="section">
+                    <h3>Create Post</h3>
+                    <input type="text" id="post-title" placeholder="Title">
+                    <textarea id="post-content" placeholder="Content"></textarea>
+                    <input type="number" id="post-author-id" placeholder="Author ID">
+                    <label><input type="checkbox" id="post-published"> Published</label>
+                    <label><input type="checkbox" id="post-private"> Private</label>
+                    <button onclick="createPost()">Create Post</button>
+                </div>
+
+                <div class="section">
+                    <h3>Update Post</h3>
+                    <input type="number" id="update-post-id" placeholder="Post ID">
+                    <input type="text" id="update-post-title" placeholder="New Title">
+                    <label><input type="checkbox" id="update-post-published"> Published</label>
+                    <button onclick="updatePost()">Update Post</button>
+                </div>
+
+                <div class="section">
+                    <h3>Get Comments</h3>
+                    <input type="number" id="comments-post-id" placeholder="Post ID">
+                    <button onclick="fetchComments()">Get Comments</button>
+                </div>
+
+                <div class="section">
+                    <h3>Create Comment</h3>
+                    <input type="number" id="comment-post-id" placeholder="Post ID">
+                    <input type="number" id="comment-author-id" placeholder="Author ID">
+                    <textarea id="comment-content" placeholder="Comment content"></textarea>
+                    <button onclick="createComment()">Create Comment</button>
+                </div>
+            </div>
+
+            <!-- Products Tab -->
+            <div id="products-tab" class="tab-content">
+                <h2>Products</h2>
+                
+                <div class="section">
+                    <h3>Query Products</h3>
+                    <button onclick="fetchAllProducts()">Get All Products</button>
+                    <button onclick="fetchProduct()">Get Product by ID</button>
+                </div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div id="orders-tab" class="tab-content">
+                <h2>Orders Management</h2>
+                
+                <div class="section">
+                    <h3>Query Orders</h3>
+                    <button onclick="fetchAllOrders()">Get All Orders</button>
+                    <button onclick="fetchUserOrders()">Get Orders by User ID</button>
+                    <button onclick="fetchOrder()">Get Order by ID</button>
+                </div>
+
+                <div class="section">
+                    <h3>Create Order</h3>
+                    <input type="number" id="order-user-id" placeholder="User ID">
+                    <input type="number" id="order-product-id" placeholder="Product ID">
+                    <input type="number" id="order-quantity" placeholder="Quantity">
+                    <button onclick="createOrder()">Create Order</button>
+                </div>
+
+                <div class="section">
+                    <h3>Update Order Status</h3>
+                    <input type="number" id="update-order-id" placeholder="Order ID">
+                    <input type="text" id="update-order-status" placeholder="New Status (pending/completed/cancelled)">
+                    <button onclick="updateOrderStatus()">Update Status</button>
+                </div>
+            </div>
+
+            <!-- Messages Tab -->
+            <div id="messages-tab" class="tab-content">
+                <h2>Messages</h2>
+                
+                <div class="section">
+                    <h3>Query Messages</h3>
+                    <input type="number" id="messages-user-id" placeholder="User ID">
+                    <button onclick="fetchMessages()">Get User Messages</button>
+                </div>
+
+                <div class="section">
+                    <h3>Send Message</h3>
+                    <input type="number" id="msg-from-id" placeholder="From User ID">
+                    <input type="number" id="msg-to-id" placeholder="To User ID">
+                    <textarea id="msg-content" placeholder="Message content"></textarea>
+                    <button onclick="sendMessage()">Send Message</button>
+                </div>
+
+                <div class="section">
+                    <h3>Mark Message as Read</h3>
+                    <input type="number" id="msg-read-id" placeholder="Message ID">
+                    <button onclick="markMessageRead()">Mark as Read</button>
+                </div>
+            </div>
+
+            <!-- Custom Query Tab -->
+            <div id="custom-tab" class="tab-content">
+                <h2>Custom GraphQL Query</h2>
+                
+                <div class="section">
+                    <h3>Execute Custom Query/Mutation</h3>
+                    <textarea id="custom-query" placeholder="Enter your GraphQL query here..." rows="10">
+query {
+  users {
+    id
+    username
+    email
+    role
+  }
+}</textarea>
+                    <button onclick="executeCustomQuery()">Execute</button>
+                    <a href="http://localhost:8000/graphql" target="_blank" class="link-btn">Open GraphiQL Playground</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="results">
+            <h3>Results</h3>
+            <pre id="output"></pre>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
