@@ -10,8 +10,6 @@ services:
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U admin -d graphql_db"]
       interval: 5s
@@ -26,7 +24,7 @@ services:
       DATABASE_URL: postgresql://admin:password123@db:5432/graphql_db
       DEBUG: "true"
     ports:
-      - "8000:8000"
+      - "8004:8000"
     depends_on:
       db:
         condition: service_healthy
@@ -38,7 +36,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:80"
+      - "8003:80"
     depends_on:
       - api
 

@@ -1,0 +1,22 @@
+version: "3.8"
+
+include:
+  - path: ./app-1-basic/vulnerable/docker-compose.yml
+    project_directory: ./app-1-basic/vulnerable
+    env_file: ./app-1-basic/vulnerable/.env
+  - path: ./app-1-basic/fixed/docker-compose.yml
+    project_directory: ./app-1-basic/fixed
+    env_file: ./app-1-basic/fixed/.env
+  - path: ./app-2-graphql/vulnerable/docker-compose.yml
+    project_directory: ./app-2-graphql/vulnerable
+    env_file: ./app-2-graphql/vulnerable/.env
+
+services:
+  # Landing Page
+  landing:
+    image: nginx:alpine
+    ports:
+      - "8000:80"
+    volumes:
+      - ./landing:/usr/share/nginx/html:ro
+    restart: unless-stopped

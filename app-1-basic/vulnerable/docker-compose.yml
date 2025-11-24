@@ -10,8 +10,6 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U vulnuser -d vulnapp"]
       interval: 5s
@@ -21,7 +19,7 @@ services:
   web:
     build: .
     ports:
-      - "8080:5000"
+      - "8001:5000"
     environment:
       DB_HOST: db
       DB_NAME: vulnapp
