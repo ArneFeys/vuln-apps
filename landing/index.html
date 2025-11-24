@@ -1,189 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vulnerable Applications - Testing Suite</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
 
-        .container {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 900px;
-            width: 100%;
-            padding: 40px;
-        }
+      .container {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-width: 900px;
+        width: 100%;
+        padding: 40px;
+      }
 
-        h1 {
-            color: #333;
-            margin-bottom: 12px;
-            font-size: 32px;
-        }
+      h1 {
+        color: #333;
+        margin-bottom: 12px;
+        font-size: 32px;
+      }
 
-        .subtitle {
-            color: #666;
-            margin-bottom: 40px;
-            font-size: 16px;
-        }
+      .subtitle {
+        color: #666;
+        margin-bottom: 40px;
+        font-size: 16px;
+      }
 
-        .apps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
+      .apps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
 
-        .app-card {
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 24px;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: block;
-            background: white;
-        }
+      .app-card {
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 24px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: block;
+        background: white;
+      }
 
-        .app-card:hover {
-            border-color: #667eea;
-            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.2);
-            transform: translateY(-4px);
-        }
+      .app-card:hover {
+        border-color: #667eea;
+        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.2);
+        transform: translateY(-4px);
+      }
 
-        .app-card h2 {
-            color: #333;
-            font-size: 20px;
-            margin-bottom: 8px;
-        }
+      .app-card h2 {
+        color: #333;
+        font-size: 20px;
+        margin-bottom: 8px;
+      }
 
-        .app-card .type {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
+      .app-card .type {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
 
-        .vulnerable {
-            background: #fee;
-            color: #c33;
-        }
+      .vulnerable {
+        background: #fee;
+        color: #c33;
+      }
 
-        .fixed {
-            background: #efe;
-            color: #3c3;
-        }
+      .fixed {
+        background: #efe;
+        color: #3c3;
+      }
 
-        .app-card p {
-            color: #666;
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 12px;
-        }
+      .app-card p {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 12px;
+      }
 
-        .port {
-            color: #667eea;
-            font-weight: 600;
-            font-size: 14px;
-        }
+      .port {
+        color: #667eea;
+        font-weight: 600;
+        font-size: 14px;
+      }
 
-        .info-section {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 30px;
-        }
+      .info-section {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 30px;
+      }
 
-        .info-section h3 {
-            color: #333;
-            font-size: 18px;
-            margin-bottom: 12px;
-        }
+      .info-section h3 {
+        color: #333;
+        font-size: 18px;
+        margin-bottom: 12px;
+      }
 
-        .info-section p {
-            color: #666;
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 8px;
-        }
+      .info-section p {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 8px;
+      }
 
-        .warning {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 12px;
-            margin-top: 20px;
-            border-radius: 4px;
-        }
+      .warning {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 12px;
+        margin-top: 20px;
+        border-radius: 4px;
+      }
 
-        .warning p {
-            color: #856404;
-            font-size: 14px;
-            margin: 0;
-        }
+      .warning p {
+        color: #856404;
+        font-size: 14px;
+        margin: 0;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>Vulnerable Applications</h1>
-        <p class="subtitle">Testing suite for AI pentesting tools and security automation systems</p>
+      <h1>Vulnerable Applications</h1>
+      <p class="subtitle">Testing suite for AI pentesting tools and security automation systems</p>
 
-        <div class="apps-grid">
-            <a href="http://localhost:8001" class="app-card" target="_blank">
-                <span class="type vulnerable">VULNERABLE</span>
-                <h2>App 1 - Basic</h2>
-                <p>Flask web application with SQL injection, XSS, and authentication bypass vulnerabilities.</p>
-                <span class="port">Port: 8001</span>
-            </a>
+      <div class="apps-grid">
+        <a href="http://vuln.feys-it.com:8001" class="app-card" target="_blank">
+          <span class="type vulnerable">VULNERABLE</span>
+          <h2>App 1 - Basic</h2>
+          <p>
+            Flask web application with SQL injection, XSS, and authentication bypass
+            vulnerabilities.
+          </p>
+          <span class="port">Port: 8001</span>
+        </a>
 
-            <a href="http://localhost:8002" class="app-card" target="_blank">
-                <span class="type fixed">FIXED</span>
-                <h2>App 1 - Fixed</h2>
-                <p>Secured version of App 1 with all vulnerabilities properly patched and mitigated.</p>
-                <span class="port">Port: 8002</span>
-            </a>
+        <a href="http://vuln.feys-it.com:8002" class="app-card" target="_blank">
+          <span class="type fixed">FIXED</span>
+          <h2>App 1 - Fixed</h2>
+          <p>Secured version of App 1 with all vulnerabilities properly patched and mitigated.</p>
+          <span class="port">Port: 8002</span>
+        </a>
 
-            <a href="http://localhost:8003" class="app-card" target="_blank">
-                <span class="type vulnerable">VULNERABLE</span>
-                <h2>App 2 - GraphQL</h2>
-                <p>GraphQL API with IDOR, NoSQL injection, and insecure direct object references.</p>
-                <span class="port">Port: 8003 (Frontend)</span>
-            </a>
+        <a href="http://vuln.feys-it.com:8003" class="app-card" target="_blank">
+          <span class="type vulnerable">VULNERABLE</span>
+          <h2>App 2 - GraphQL</h2>
+          <p>GraphQL API with IDOR, NoSQL injection, and insecure direct object references.</p>
+          <span class="port">Port: 8003 (Frontend)</span>
+        </a>
 
-            <a href="http://localhost:8004" class="app-card" target="_blank">
-                <span class="type vulnerable">VULNERABLE</span>
-                <h2>App 2 - GraphQL API</h2>
-                <p>Direct access to the GraphQL API endpoint for testing tools.</p>
-                <span class="port">Port: 8004 (API)</span>
-            </a>
-        </div>
+        <a href="http://vuln.feys-it.com:8004" class="app-card" target="_blank">
+          <span class="type vulnerable">VULNERABLE</span>
+          <h2>App 2 - GraphQL API</h2>
+          <p>Direct access to the GraphQL API endpoint for testing tools.</p>
+          <span class="port">Port: 8004 (API)</span>
+        </a>
+      </div>
 
-        <div class="info-section">
-            <h3>Quick Start</h3>
-            <p>All applications are running and ready for testing.</p>
-            <p>Click any card above to access the respective application.</p>
-            <p>Refer to each application's README for specific vulnerability details and exploitation examples.</p>
-        </div>
+      <div class="info-section">
+        <h3>Quick Start</h3>
+        <p>All applications are running and ready for testing.</p>
+        <p>Click any card above to access the respective application.</p>
+        <p>
+          Refer to each application's README for specific vulnerability details and exploitation
+          examples.
+        </p>
+      </div>
 
-        <div class="warning">
-            <p><strong>Warning:</strong> These applications contain intentional security vulnerabilities. Only run in isolated testing environments.</p>
-        </div>
+      <div class="warning">
+        <p>
+          <strong>Warning:</strong> These applications contain intentional security vulnerabilities.
+          Only run in isolated testing environments.
+        </p>
+      </div>
     </div>
-</body>
+  </body>
 </html>
-

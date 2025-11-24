@@ -82,7 +82,7 @@ The `--` comments out the rest of the query, and `'1'='1'` is always true, bypas
 
 3. **Access the application**
 
-   - Open your browser and go to: http://localhost:8080
+   - Open your browser and go to: http://vuln.feys-it.com:8002
 
 4. **Stop the application**
 
