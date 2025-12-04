@@ -1,0 +1,13 @@
+[project]
+name = "browser-use-tests"
+version = "0.1.0"
+description = "Browser-Use agent for testing vulnerable applications"
+requires-python = ">=3.11"
+dependencies = [
+    "browser-use==0.9.5",
+    "playwright>=1.56.0",
+    "python-dotenv>=1.0.0",
+]
+
+[tool.uv]
+package = false
