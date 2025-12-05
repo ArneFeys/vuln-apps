@@ -92,10 +92,17 @@ def main() -> None:
     
     args = parser.parse_args()
     
-    # SYSTEM_PROMPT = """
-    # If you encounter problems with the accessibility of the page becuase elements are not indexed, you should use the javascript evaluate action
-    # to run custom javascript to interact with the page.
-    # """
+    SYSTEM_PROMPT = """
+    If form elements (input fields, buttons) are not indexed or you can't find them in the interactive elements list, 
+    use the 'evaluate' action with JavaScript to interact directly:
+
+    Example for login forms:
+    - Find email: document.querySelector('input[type="email"], input[placeholder*="email"]')
+    - Find password: document.querySelector('input[type="password"]')  
+    - Click button: document.querySelector('button[type="submit"]').click()
+
+    Always try evaluate action as fallback when click/input actions fail due to missing indices.
+    """
 
     asyncio.run(
         run_agent(
@@ -104,7 +111,7 @@ def main() -> None:
             headless=args.headless,
             max_steps=args.max_steps,
             use_vision=True,
-            # extend_system_message=SYSTEM_PROMPT,
+            extend_system_message=SYSTEM_PROMPT,
         )
     )
 

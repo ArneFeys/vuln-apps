@@ -1,0 +1,9 @@
+services:
+  api-credentials-vuln:
+    build: .
+    ports:
+      - "8005:5000"
+    restart: unless-stopped
+    environment:
+      - FLASK_ENV=development
+

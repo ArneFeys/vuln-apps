@@ -5,6 +5,8 @@ include:
     project_directory: ./app-1-basic/fixed
   - path: ./app-2-graphql/vulnerable/docker-compose.yml
     project_directory: ./app-2-graphql/vulnerable
+  - path: ./app-3-api-credentials/vulnerable/docker-compose.yml
+    project_directory: ./app-3-api-credentials/vulnerable
 
 services:
   landing:
