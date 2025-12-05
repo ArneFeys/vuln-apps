@@ -1,0 +1,8 @@
+services:
+  nextjs-app:
+    build: .
+    ports:
+      - "443:3000"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped

@@ -7,6 +7,8 @@ include:
     project_directory: ./app-2-graphql/vulnerable
   - path: ./app-3-api-credentials/vulnerable/docker-compose.yml
     project_directory: ./app-3-api-credentials/vulnerable
+  - path: ./app-4-nextjs-rce/vulnerable/docker-compose.yml
+    project_directory: ./app-4-nextjs-rce/vulnerable
 
 services:
   landing:
