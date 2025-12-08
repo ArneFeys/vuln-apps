@@ -17,7 +17,7 @@ services:
   app1-fixed-web:
     build: .
     ports:
-      - "8002:5000"
+      - "8001:5000"
     environment:
       DB_HOST: app1-fixed-db
       DB_NAME: vulnapp
