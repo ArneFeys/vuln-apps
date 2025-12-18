@@ -2,12 +2,65 @@
 name = "browser-use-tests"
 version = "0.1.0"
 description = "Browser-Use agent for testing vulnerable applications"
+authors = [
+    { name = "Arne Feys" },
+    { name = "Philippe Dourassov" },
+    { name = "Miel Verkerken" },
+]
 requires-python = ">=3.11"
+readme = "README.md"
 dependencies = [
+    "boto3>=1.35.0",
     "browser-use==0.10.1",
-    "playwright>=1.56.0",
+    "browser-use-sdk>=2.0.12",
+    "jinja2>=3.1.0",
+    "playwright>=1.49.0",
+    "pydantic==2.12.5",
+    "pyotp>=2.9.0",
     "python-dotenv>=1.0.0",
+    "requests>=2.32.0",
 ]
 
 [tool.uv]
 package = false
+
+[dependency-groups]
+dev = [
+    "boto3-stubs[secretsmanager]",
+    "mypy",
+    "ruff",
+    "types-requests",
+    "pydantic"
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "ASYNC",    # async errors
+    "E",        # pycodestyle errors
+    "F",        # pyflakes errors
+    "I",        # isort (import sorting)
+]
+ignore = ["E501"]
+unfixable = []
+
+[tool.mypy]
+python_version = "3.11"
+check_untyped_defs = true
+plugins = ["pydantic.mypy"]
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+[tool.pyright]
+typeCheckingMode = "basic"
+include = ["src"]
+exclude = []
+venvPath = "."
+venv = ".venv"
+reportMissingTypeStubs = false
