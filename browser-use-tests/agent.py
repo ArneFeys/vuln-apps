@@ -10,7 +10,7 @@ Usage:
 import argparse
 import asyncio
 
-from browser_use import Agent, Browser, ChatOpenAI
+from browser_use import Agent, Browser, ChatOpenAI, ChatBrowserUse
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -34,9 +34,16 @@ async def run_agent(
     browser = Browser(
         headless=headless,
         window_size={"width": 1280, "height": 800},
+        minimum_wait_page_load_time=3,
+        wait_between_actions=1,
+        wait_for_network_idle_page_load_time=3,
+        # Disable paint order filtering - this fixes issues where interactive elements
+        # (like login forms) are incorrectly filtered out on some websites
+        paint_order_filtering=False,
     )
     
     llm = ChatOpenAI(model="gpt-5-mini")
+    llm = ChatBrowserUse()
     
     agent = Agent(
         task=full_task,
