@@ -55,23 +55,18 @@
     </style>
 </head>
 <body>
-    <h1>HTTPS Traffic Logger <span class="badge">PCAP Enabled</span></h1>
-    <p>This application logs all incoming HTTP/HTTPS requests and captures network traffic to PCAP files.</p>
+    <h1>HTTPS Traffic Logger</h1>
+    <p>This application logs all incoming HTTP/HTTPS requests with powerful filtering capabilities.</p>
     
     <div class="nav-container">
         <a href="/requests" class="nav-card">
             <h2>All Requests</h2>
-            <p>View all individual HTTP/HTTPS requests received, including method, path, timestamp, and client information.</p>
+            <p>View all individual HTTP/HTTPS requests with filters for IP, User-Agent, Method, and Path.</p>
         </a>
         
         <a href="/ips" class="nav-card">
             <h2>Unique IPs</h2>
-            <p>View all unique IP addresses that have sent requests, along with request counts for each IP.</p>
-        </a>
-        
-        <a href="/pcap" class="nav-card">
-            <h2>PCAP Files</h2>
-            <p>Download captured network traffic as PCAP files for analysis in Wireshark or other tools.</p>
+            <p>View all unique IP addresses with request counts. Click to filter requests by IP.</p>
         </a>
     </div>
 </body>

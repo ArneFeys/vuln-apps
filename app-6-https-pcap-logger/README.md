@@ -1,22 +1,22 @@
-# HTTPS Traffic Logger with PCAP Capture
+# HTTPS Traffic Logger
 
-A Flask application that logs all incoming HTTP/HTTPS traffic and captures network packets to PCAP files for analysis.
+A Flask application that logs all incoming HTTP/HTTPS traffic with powerful filtering and analysis capabilities.
 
 ## Features
 
 - HTTPS endpoint on port 443 with self-signed SSL certificate
-- HTTP endpoint on port 80
-- Logs all incoming requests (method, path, IP, timestamp, headers)
-- Captures all network traffic to PCAP files using tcpdump
+- HTTP endpoint on port 8080
+- **Python-based request logging** (unlimited, persisted to disk as JSONL)
+- **Filter requests** by IP, User-Agent, Method, and Path
 - View all individual requests with protocol information
-- View unique IP addresses with request counts
-- Download PCAP files for analysis in Wireshark
+- View unique IP addresses with request counts (click to filter)
+- Real client IP addresses logged from nginx proxy headers
 
 ## Architecture
 
-- **Nginx**: Reverse proxy handling HTTP (port 6080) and HTTPS (port 6443)
+- **Nginx**: Reverse proxy handling HTTP (port 8080) and HTTPS (port 443)
 - **Flask**: Backend application for logging and serving pages
-- **Packet Capture**: tcpdump container capturing all traffic to PCAP files
+- **JSONL Storage**: All requests persisted to `/captures/requests.jsonl` for unlimited history
 
 ## Setup
 
@@ -48,8 +48,10 @@ docker-compose up --build
 
 ## Access
 
-- HTTP: `http://localhost:6080`
-- HTTPS: `https://localhost:6443` (accept self-signed certificate warning)
+- HTTP: `http://localhost:8080`
+- HTTPS: `https://localhost:443`
+
+Note: Accept self-signed certificate warning in browser
 
 ## Pages
 
@@ -57,39 +59,41 @@ docker-compose up --build
 Landing page with navigation to all views
 
 ### All Requests
-`/requests` - Displays all individual requests showing:
-- Timestamp
-- Protocol (HTTP/HTTPS)
-- IP address
-- HTTP method
-- Request path
-- User agent
+`/requests` - Displays all individual requests with powerful filters:
+- Filter by IP address (partial match)
+- Filter by User-Agent (partial match)
+- Filter by HTTP method (GET, POST, etc.)
+- Filter by path (partial match)
+- Shows: Timestamp, Protocol (HTTP/HTTPS), IP, Method, Path, User-Agent
 
 ### Unique IPs
 `/ips` - Displays unique IP addresses sorted by request count
+- Click "View Requests" to filter all requests from that IP
 
-### PCAP Files
-`/pcap` - List and download captured PCAP files for analysis
+## Request Log Storage
 
-## PCAP Analysis
-
-Download PCAP files and analyze with:
+All requests are stored in `/captures/requests.jsonl`:
+- JSONL format (one JSON object per line)
+- Unlimited storage (no artificial limits)
+- Persisted across container restarts
+- Can be analyzed with standard tools
 
 ```bash
-# View with tcpdump
-tcpdump -r traffic-20260114-120000.pcap
+# View raw log file
+tail -f captures/requests.jsonl
 
-# Analyze with tshark
-tshark -r traffic-20260114-120000.pcap
+# Count requests by IP
+cat captures/requests.jsonl | jq -r '.ip' | sort | uniq -c | sort -rn
 
-# Open in Wireshark
-wireshark traffic-20260114-120000.pcap
+# Find requests with specific user agent
+cat captures/requests.jsonl | jq 'select(.user_agent | contains("bot"))'
 ```
 
 ## Notes
 
 - Self-signed certificate will show browser warnings (this is expected)
-- PCAP files are timestamped and stored in the `captures/` directory
-- Requests are stored in memory (up to 1000 most recent)
-- Packet capture runs continuously while services are up
+- All requests are logged to `captures/requests.jsonl` with no limit
+- Logs persist across container restarts
+- Real client IP addresses are captured from nginx proxy headers
 - All HTTP methods are supported and logged
+- Filters support partial/case-insensitive matching

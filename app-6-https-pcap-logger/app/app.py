@@ -1,14 +1,42 @@
-from flask import Flask, request, render_template, send_file
+from flask import Flask, request, render_template
 from datetime import datetime
 from collections import defaultdict
 import os
-import glob
+import json
 
 app = Flask(__name__)
 
-# Store requests in memory
+# Store requests in memory (no limit)
 requests_log = []
 ip_counts = defaultdict(int)
+
+# Log file path
+LOG_FILE = '/captures/requests.jsonl'
+
+def save_request_to_file(request_data):
+    """Save request to JSONL file"""
+    try:
+        with open(LOG_FILE, 'a') as f:
+            f.write(json.dumps(request_data) + '\n')
+    except Exception as e:
+        print(f"Error saving to file: {e}")
+
+def load_requests_from_file():
+    """Load requests from JSONL file"""
+    global requests_log, ip_counts
+    if os.path.exists(LOG_FILE):
+        try:
+            with open(LOG_FILE, 'r') as f:
+                for line in f:
+                    if line.strip():
+                        req = json.loads(line)
+                        requests_log.append(req)
+                        ip_counts[req['ip']] += 1
+        except Exception as e:
+            print(f"Error loading from file: {e}")
+
+# Load existing requests on startup
+load_requests_from_file()
 
 @app.before_request
 def log_request():
@@ -29,14 +57,12 @@ def log_request():
         'user_agent': request.headers.get('User-Agent', 'Unknown'),
         'referer': request.headers.get('Referer', 'None'),
         'query_string': request.query_string.decode('utf-8') if request.query_string else '',
+        'content_length': request.headers.get('Content-Length', '0'),
     }
     
     requests_log.append(request_data)
     ip_counts[ip_address] += 1
-    
-    # Keep only last 1000 requests to avoid memory issues
-    if len(requests_log) > 1000:
-        requests_log.pop(0)
+    save_request_to_file(request_data)
     
     print(f"[{timestamp}] {ip_address} - {request.scheme.upper()} {request.method} {request.path}")
 
@@ -47,8 +73,32 @@ def index():
 
 @app.route('/requests')
 def all_requests():
-    """Display all individual requests"""
-    return render_template('requests.html', requests=reversed(requests_log), total=len(requests_log))
+    """Display all individual requests with filters"""
+    # Get filter parameters
+    filter_ip = request.args.get('ip', '').strip()
+    filter_ua = request.args.get('ua', '').strip().lower()
+    filter_method = request.args.get('method', '').strip().upper()
+    filter_path = request.args.get('path', '').strip().lower()
+    
+    # Filter requests
+    filtered = requests_log
+    if filter_ip:
+        filtered = [r for r in filtered if filter_ip in r['ip']]
+    if filter_ua:
+        filtered = [r for r in filtered if filter_ua in r['user_agent'].lower()]
+    if filter_method:
+        filtered = [r for r in filtered if r['method'] == filter_method]
+    if filter_path:
+        filtered = [r for r in filtered if filter_path in r['path'].lower()]
+    
+    return render_template('requests.html', 
+                         requests=reversed(filtered), 
+                         total=len(requests_log),
+                         filtered_count=len(filtered),
+                         filter_ip=filter_ip,
+                         filter_ua=filter_ua,
+                         filter_method=filter_method,
+                         filter_path=filter_path)
 
 @app.route('/ips')
 def unique_ips():
@@ -56,33 +106,7 @@ def unique_ips():
     sorted_ips = sorted(ip_counts.items(), key=lambda x: x[1], reverse=True)
     return render_template('ips.html', ips=sorted_ips, total_unique=len(sorted_ips))
 
-@app.route('/pcap')
-def pcap_files():
-    """Display and allow download of pcap files"""
-    pcap_dir = '/captures'
-    pcap_files = []
-    
-    if os.path.exists(pcap_dir):
-        files = glob.glob(os.path.join(pcap_dir, '*.pcap'))
-        for f in sorted(files, key=os.path.getmtime, reverse=True):
-            stat = os.stat(f)
-            pcap_files.append({
-                'name': os.path.basename(f),
-                'size': stat.st_size,
-                'modified': datetime.fromtimestamp(stat.st_mtime).strftime('%Y-%m-%d %H:%M:%S')
-            })
-    
-    return render_template('pcap.html', pcap_files=pcap_files)
-
-@app.route('/download/<filename>')
-def download_pcap(filename):
-    """Download a pcap file"""
-    pcap_path = os.path.join('/captures', filename)
-    if os.path.exists(pcap_path) and filename.endswith('.pcap'):
-        return send_file(pcap_path, as_attachment=True)
-    return "File not found", 404
-
-# Catch-all route to log any other requests
+# Catch-all route to log any other requests (must be last)
 @app.route('/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'])
 def catch_all(path):
     return f"Request logged: {request.method} /{path}", 200

@@ -24,17 +24,6 @@ services:
     networks:
       - https-traffic-net
 
-  https-packet-capture:
-    image: nicolaka/netshoot
-    command: sh -c "tcpdump -i any -w /captures/traffic-$$(date +%%Y%%m%%d-%%H%%M%%S).pcap"
-    network_mode: "service:https-nginx"
-    volumes:
-      - ./captures:/captures
-    cap_add:
-      - NET_ADMIN
-    depends_on:
-      - https-nginx
-
 networks:
   https-traffic-net:
     driver: bridge

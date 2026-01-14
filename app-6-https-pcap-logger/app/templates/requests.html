@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 20px;
             background: #f5f5f5;
@@ -35,24 +35,81 @@
             margin: 20px 0;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .filters form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .filter-group label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .filter-group input, .filter-group select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .btn-filter {
+            background: #28a745;
+            color: white;
+        }
+        .btn-clear {
+            background: #6c757d;
+            color: white;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
         table {
             width: 100%;
-            background: white;
             border-collapse: collapse;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            overflow: hidden;
         }
         th {
             background: #28a745;
             color: white;
-            padding: 15px;
+            padding: 12px 10px;
             text-align: left;
             font-weight: 600;
+            position: sticky;
+            top: 0;
+            white-space: nowrap;
         }
         td {
-            padding: 12px 15px;
+            padding: 10px;
             border-bottom: 1px solid #e0e0e0;
+            vertical-align: top;
         }
         tr:hover {
             background: #f8f9fa;
@@ -64,6 +121,7 @@
             display: inline-block;
             min-width: 60px;
             text-align: center;
+            font-size: 12px;
         }
         .method.GET { background: #28a745; color: white; }
         .method.POST { background: #007bff; color: white; }
@@ -75,17 +133,32 @@
             padding: 4px 8px;
             border-radius: 4px;
             display: inline-block;
-            margin-right: 5px;
+            font-size: 12px;
         }
         .scheme.https { background: #28a745; color: white; }
         .scheme.http { background: #ffc107; color: black; }
         .path {
             font-family: monospace;
             color: #333;
+            word-break: break-all;
+            max-width: 300px;
+            font-size: 13px;
         }
         .ip {
             font-family: monospace;
             color: #6c757d;
+            white-space: nowrap;
+            font-size: 13px;
+        }
+        .user-agent {
+            max-width: 250px;
+            word-break: break-word;
+            font-size: 12px;
+            color: #666;
+        }
+        .timestamp {
+            white-space: nowrap;
+            font-size: 13px;
         }
         .empty {
             padding: 40px;
@@ -101,41 +174,78 @@
         <a href="/">Home</a>
         <a href="/requests">All Requests</a>
         <a href="/ips">Unique IPs</a>
-        <a href="/pcap">PCAP Files</a>
     </div>
     
     <div class="stats">
         <strong>Total Requests:</strong> {{ total }}
+        {% if filtered_count != total %}
+        | <strong>Filtered:</strong> {{ filtered_count }}
+        {% endif %}
+    </div>
+    
+    <div class="filters">
+        <form method="get" action="/requests">
+            <div class="filter-group">
+                <label>IP Address</label>
+                <input type="text" name="ip" placeholder="e.g., 192.168" value="{{ filter_ip }}">
+            </div>
+            <div class="filter-group">
+                <label>User Agent</label>
+                <input type="text" name="ua" placeholder="e.g., Chrome, Mozilla" value="{{ filter_ua }}">
+            </div>
+            <div class="filter-group">
+                <label>Method</label>
+                <select name="method">
+                    <option value="">All</option>
+                    <option value="GET" {% if filter_method == 'GET' %}selected{% endif %}>GET</option>
+                    <option value="POST" {% if filter_method == 'POST' %}selected{% endif %}>POST</option>
+                    <option value="PUT" {% if filter_method == 'PUT' %}selected{% endif %}>PUT</option>
+                    <option value="DELETE" {% if filter_method == 'DELETE' %}selected{% endif %}>DELETE</option>
+                    <option value="PATCH" {% if filter_method == 'PATCH' %}selected{% endif %}>PATCH</option>
+                    <option value="OPTIONS" {% if filter_method == 'OPTIONS' %}selected{% endif %}>OPTIONS</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Path</label>
+                <input type="text" name="path" placeholder="e.g., /api, .php" value="{{ filter_path }}">
+            </div>
+            <div class="filter-buttons">
+                <button type="submit" class="btn-filter">Filter</button>
+                <button type="button" class="btn-clear" onclick="window.location.href='/requests'">Clear</button>
+            </div>
+        </form>
     </div>
     
     {% if requests %}
-    <table>
-        <thead>
-            <tr>
-                <th>Timestamp</th>
-                <th>Protocol</th>
-                <th>IP Address</th>
-                <th>Method</th>
-                <th>Path</th>
-                <th>User Agent</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for req in requests %}
-            <tr>
-                <td>{{ req.timestamp }}</td>
-                <td><span class="scheme {{ req.scheme }}">{{ req.scheme.upper() }}</span></td>
-                <td class="ip">{{ req.ip }}</td>
-                <td><span class="method {{ req.method }}">{{ req.method }}</span></td>
-                <td class="path">{{ req.path }}{% if req.query_string %}?{{ req.query_string }}{% endif %}</td>
-                <td>{{ req.user_agent[:50] }}{% if req.user_agent|length > 50 %}...{% endif %}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Proto</th>
+                    <th>IP</th>
+                    <th>Method</th>
+                    <th>Path</th>
+                    <th>User Agent</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in requests %}
+                <tr>
+                    <td class="timestamp">{{ req.timestamp }}</td>
+                    <td><span class="scheme {{ req.scheme }}">{{ req.scheme.upper() }}</span></td>
+                    <td class="ip">{{ req.ip }}</td>
+                    <td><span class="method {{ req.method }}">{{ req.method }}</span></td>
+                    <td class="path">{{ req.path }}{% if req.query_string %}?{{ req.query_string }}{% endif %}</td>
+                    <td class="user-agent">{{ req.user_agent if req.user_agent != 'Unknown' else '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% else %}
     <div class="empty">
-        No requests logged yet.
+        No requests match the current filters.
     </div>
     {% endif %}
 </body>
