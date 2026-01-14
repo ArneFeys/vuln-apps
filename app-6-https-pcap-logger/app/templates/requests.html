@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Requests - HTTPS Traffic Logger</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #28a745;
+            padding-bottom: 10px;
+        }
+        .nav {
+            margin: 20px 0;
+        }
+        .nav a {
+            color: #28a745;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+        .nav a:hover {
+            text-decoration: underline;
+        }
+        .stats {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #28a745;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .method {
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            min-width: 60px;
+            text-align: center;
+        }
+        .method.GET { background: #28a745; color: white; }
+        .method.POST { background: #007bff; color: white; }
+        .method.PUT { background: #ffc107; color: black; }
+        .method.DELETE { background: #dc3545; color: white; }
+        .method.PATCH { background: #17a2b8; color: white; }
+        .scheme {
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .scheme.https { background: #28a745; color: white; }
+        .scheme.http { background: #ffc107; color: black; }
+        .path {
+            font-family: monospace;
+            color: #333;
+        }
+        .ip {
+            font-family: monospace;
+            color: #6c757d;
+        }
+        .empty {
+            padding: 40px;
+            text-align: center;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <h1>All Requests</h1>
+    
+    <div class="nav">
+        <a href="/">Home</a>
+        <a href="/requests">All Requests</a>
+        <a href="/ips">Unique IPs</a>
+        <a href="/pcap">PCAP Files</a>
+    </div>
+    
+    <div class="stats">
+        <strong>Total Requests:</strong> {{ total }}
+    </div>
+    
+    {% if requests %}
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Protocol</th>
+                <th>IP Address</th>
+                <th>Method</th>
+                <th>Path</th>
+                <th>User Agent</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for req in requests %}
+            <tr>
+                <td>{{ req.timestamp }}</td>
+                <td><span class="scheme {{ req.scheme }}">{{ req.scheme.upper() }}</span></td>
+                <td class="ip">{{ req.ip }}</td>
+                <td><span class="method {{ req.method }}">{{ req.method }}</span></td>
+                <td class="path">{{ req.path }}{% if req.query_string %}?{{ req.query_string }}{% endif %}</td>
+                <td>{{ req.user_agent[:50] }}{% if req.user_agent|length > 50 %}...{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty">
+        No requests logged yet.
+    </div>
+    {% endif %}
+</body>
+</html>
