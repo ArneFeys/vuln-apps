@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unique IPs - Traffic Logger</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .nav {
+            margin: 20px 0;
+        }
+        .nav a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+        .nav a:hover {
+            text-decoration: underline;
+        }
+        .stats {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .ip {
+            font-family: monospace;
+            color: #333;
+            font-weight: 500;
+        }
+        .count {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .empty {
+            padding: 40px;
+            text-align: center;
+            color: #999;
+        }
+        .rank {
+            color: #6c757d;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Unique IP Addresses</h1>
+    
+    <div class="nav">
+        <a href="/">Home</a>
+        <a href="/requests">All Requests</a>
+        <a href="/ips">Unique IPs</a>
+    </div>
+    
+    <div class="stats">
+        <strong>Total Unique IPs:</strong> {{ total_unique }}
+    </div>
+    
+    {% if ips %}
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>IP Address</th>
+                <th>Request Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ip, count in ips %}
+            <tr>
+                <td class="rank">{{ loop.index }}</td>
+                <td class="ip">{{ ip }}</td>
+                <td class="count">{{ count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty">
+        No IP addresses logged yet.
+    </div>
+    {% endif %}
+</body>
+</html>
