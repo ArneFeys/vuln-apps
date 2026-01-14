@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  traffic-logger:
+  https-logger:
     build: .
     environment:
       - FLASK_ENV=development
@@ -9,9 +9,9 @@ services:
       - ./app:/app
       - ./captures:/captures
     networks:
-      - traffic-net
+      - https-traffic-net
 
-  nginx:
+  https-nginx:
     image: nginx:alpine
     ports:
       - "6080:80"
@@ -20,21 +20,21 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./certs:/etc/nginx/certs:ro
     depends_on:
-      - traffic-logger
+      - https-logger
     networks:
-      - traffic-net
+      - https-traffic-net
 
-  packet-capture:
+  https-packet-capture:
     image: nicolaka/netshoot
     command: sh -c "tcpdump -i any -w /captures/traffic-$$(date +%%Y%%m%%d-%%H%%M%%S).pcap"
-    network_mode: "service:nginx"
+    network_mode: "service:https-nginx"
     volumes:
       - ./captures:/captures
     cap_add:
       - NET_ADMIN
     depends_on:
-      - nginx
+      - https-nginx
 
 networks:
-  traffic-net:
+  https-traffic-net:
     driver: bridge
