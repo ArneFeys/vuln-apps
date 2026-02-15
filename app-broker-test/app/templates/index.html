@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Broker Test - testbroker.pentest</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        a {
+            display: block;
+            padding: 10px;
+            margin: 10px 0;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+        }
+        a:hover {
+            background: #0056b3;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #218838;
+        }
+        .result {
+            background: #f0f0f0;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        form {
+            margin: 10px 0;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Broker Test - testbroker.pentest</h1>
+    <p>Testing absolute testbroker.pentest:5001 URLs through the broker</p>
+    
+    <div class="test-section">
+        <h2>Absolute Links</h2>
+        <a href="http://testbroker.pentest:5001/page1">Absolute testbroker.pentest:5001/page1</a>
+        <a href="http://testbroker.pentest:5001/page2">Absolute testbroker.pentest:5001/page2</a>
+        <a href="http://testbroker.pentest:5001/api/data">Absolute testbroker.pentest:5001/api/data</a>
+    </div>
+    
+    <div class="test-section">
+        <h2>Redirects</h2>
+        <a href="/redirect-relative">Relative redirect to /page1</a>
+        <a href="/redirect-absolute">Absolute redirect to http://testbroker.pentest:5001/page2</a>
+    </div>
+    
+    <div class="test-section">
+        <h2>POST Requests</h2>
+        <button onclick="testPost('relative')">POST to /api/data (relative)</button>
+        <button onclick="testPost('absolute')">POST to http://testbroker.pentest:5001/api/data</button>
+        <div id="post-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Form POST</h2>
+        <form action="/form-submit" method="POST">
+            <input type="text" name="test_field" value="relative form" required>
+            <button type="submit">Submit (relative)</button>
+        </form>
+        
+        <form action="http://testbroker.pentest:5001/form-submit" method="POST">
+            <input type="text" name="test_field" value="absolute form" required>
+            <button type="submit">Submit (absolute testbroker.pentest)</button>
+        </form>
+    </div>
+    
+    <script>
+        async function testPost(type) {
+            const url = type === 'relative' ? '/api/data' : 'http://testbroker.pentest:5001/api/data';
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ test: 'data', type: type })
+                });
+                const data = await response.json();
+                document.getElementById('post-result').innerHTML = 
+                    '<div class="result"><strong>' + type + ':</strong> ' + JSON.stringify(data) + '</div>';
+            } catch (error) {
+                document.getElementById('post-result').innerHTML = 
+                    '<div class="result"><strong>Error:</strong> ' + error.message + '</div>';
+            }
+        }
+    </script>
+</body>
+</html>

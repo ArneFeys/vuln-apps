@@ -1,15 +1,11 @@
-from browser_use import Agent, ChatOpenAI
+from browser_use import Agent, ChatBrowserUse
 from dotenv import load_dotenv
 import asyncio
 import os
 load_dotenv()
 
 async def main():
-    llm = ChatOpenAI(
-        model="litellm-browser",
-        base_url=os.getenv("LITELLM_BASE_URL"),
-        api_key=os.getenv("LITELLM_API_KEY")
-    )
+    llm = ChatBrowserUse(model='bu-latest')
     task = "Find the number 1 post on Show HN"
     agent = Agent(task=task, llm=llm)
     await agent.run()
