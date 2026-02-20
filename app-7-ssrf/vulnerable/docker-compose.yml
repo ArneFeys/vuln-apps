@@ -1,0 +1,8 @@
+services:
+  app7-ssrf-web:
+    build: .
+    ports:
+      - "8008:5000"
+    volumes:
+      - ./app:/app
+    restart: unless-stopped

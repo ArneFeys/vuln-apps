@@ -13,6 +13,8 @@ include:
     project_directory: ./app-5-traffic-logger
   - path: ./app-6-https-pcap-logger/docker-compose.yml
     project_directory: ./app-6-https-pcap-logger
+  - path: ./app-7-ssrf/vulnerable/docker-compose.yml
+    project_directory: ./app-7-ssrf/vulnerable
 
 services:
   landing:

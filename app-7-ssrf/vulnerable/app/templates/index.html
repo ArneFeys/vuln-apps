@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>URL Fetcher</title>
+    <style>
+        body { font-family: sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; }
+        h1 { color: #c0392b; }
+        form { margin: 20px 0; }
+        input[type="text"] { width: 70%; padding: 8px; }
+        button { padding: 8px 16px; }
+        .error { color: red; margin-top: 10px; }
+        .result { background: #f4f4f4; padding: 15px; margin-top: 20px; border-radius: 4px; overflow-x: auto; }
+        pre { white-space: pre-wrap; word-wrap: break-word; }
+    </style>
+</head>
+<body>
+    <h1>URL Fetcher</h1>
+    <p>Enter a URL to fetch its contents from the server.</p>
+
+    <form method="POST" action="/fetch">
+        <input type="text" name="url" placeholder="https://example.com" value="{{ url or '' }}">
+        <button type="submit">Fetch</button>
+    </form>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if body is defined and body %}
+        <div class="result">
+            <strong>Status:</strong> {{ status }}<br>
+            <strong>URL:</strong> {{ url }}<br><br>
+            <pre>{{ body }}</pre>
+        </div>
+    {% endif %}
+</body>
+</html>
